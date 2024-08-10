@@ -118,7 +118,7 @@ class AddressBook(UserDict):
     
 class Birthday(Field):
     def __init__(self, value):  
-        self.value = value
+        super().__init__(value)
         try:
             datetime.strptime(value, "%d.%m.%Y")
         except ValueError:
