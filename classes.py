@@ -54,7 +54,7 @@ class Record:
 
     def __str__(self):
         phones = '; '.join(p.value for p in self.phones)
-        birthday = f", Birthday: {self.birthday.value.strftime('%d.%m.%Y')}" if self.birthday else ""
+        birthday = f", Birthday: {self.birthday.value}" if self.birthday else ""
         return f"Contact name: {self.name.value}, Phones: {phones}{birthday}"
 
 class AddressBook(UserDict):
@@ -99,7 +99,7 @@ class AddressBook(UserDict):
         for record in self.data.values():
             if not record.birthday:
                 continue
-            birthday = record.birthday.value.date()
+            birthday = datetime.strptime(record.birthday.value, '%d.%m.%Y').date()
             birthday_this_year = birthday.replace(year=today.year)
 
             if birthday_this_year < today:
@@ -118,10 +118,8 @@ class AddressBook(UserDict):
     
 class Birthday(Field):
     def __init__(self, value):  
+        self.value = value
         try:
-            self.value = datetime.strptime(value, "%d.%m.%Y")
+            datetime.strptime(value, "%d.%m.%Y")
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
-        
-    def __str__(self):
-        return self.value.strftime("%d.%m.%Y")
